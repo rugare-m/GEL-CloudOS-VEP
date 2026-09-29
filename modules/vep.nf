@@ -3,8 +3,8 @@ process VEP {
 
     tag "${vcf_file.simpleName}"
 
-    cpus 16
-    memory 96.GB
+    cpus 8
+    memory 32.GB
 
     input:
     path vcf_file
@@ -54,7 +54,7 @@ process VEP {
         --plugin SpliceRegion \
         --plugin TSSDistance \
         --plugin AlphaMissense,file="${alpha}",cols=all \
-        --fork 8 \
+        --fork ${task.cpus} --buffer_size 10000 --no_stats \
         --safe
     """
 }
@@ -69,8 +69,8 @@ process RUN_VEP {
     output:
     path "${vcf_file.simpleName}.annotated.txt"
 
-    cpus 50
-    memory 50.GB
+    cpus 8
+    memory 32.GB
 
     script:
     """
@@ -96,7 +96,7 @@ process RUN_VEP {
         --plugin TSSDistance \
         --plugin dbscSNV,"${params.dbscSNV}" \
         --plugin AlphaMissense,file="${params.alpha}",cols=all \
-        --fork 4 
+        --fork ${task.cpus} --buffer_size 10000 --no_stats 
     """
 }
 
